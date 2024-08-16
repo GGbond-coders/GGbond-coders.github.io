@@ -6,7 +6,7 @@
 
 index.html修改主要信息  **|**  time.js修改生日  **|**  index.js修改「想说的话」
 
-demo : https://GGbond-coders.github.io/happybirthday/
+demo : [https://GGbond-coders.github.io/happybirthday/](https://ggbond-coders.github.io/ggbond.github.io/)
 
 ![](https://youpai.roccoshi.top/img/20200801205158.png)
 
