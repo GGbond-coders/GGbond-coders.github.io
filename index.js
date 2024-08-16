@@ -90,59 +90,50 @@ var S = {
             }
         }
         function performAction(value) {
-            var action,
-            value,
-            current;
-            sequence = typeof (value) === 'object' ? value : sequence.concat(value.split('|'));
-            timedAction(function (index) {
-                current = sequence.shift();
-                action = getAction(current);
-                value = getValue(current);
-                switch (action) {
-                    case 'countdown':
-                    value = parseInt(value) || 10;
-                    value = value > 0 ? value : 10;
-                    timedAction(function (index) {
-                        if (index === 0) {
-                            if (sequence.length === 0) {
-                                S.Shape.switchShape(S.ShapeBuilder.letter(''));
-                            } else {
-                                performAction(sequence);
-                            }
+    var action,
+        value,
+        current;
+    sequence = typeof (value) === 'object' ? value : sequence.concat(value.split('|'));
+    timedAction(function (index) {
+        current = sequence.shift();
+        action = getAction(current);
+        value = getValue(current);
+        switch (action) {
+            case 'countdown':
+                value = parseInt(value) || 10;
+                value = value > 0 ? value : 10;
+                timedAction(function (index) {
+                    if (index === 0) {
+                        if (sequence.length === 0) {
+                            S.Shape.switchShape(S.ShapeBuilder.letter(''));
                         } else {
-                            S.Shape.switchShape(S.ShapeBuilder.letter(index), true);
+                            performAction(sequence);
                         }
-                    }, 1000, value, true);
-                    break;
-                    case 'rectangle':
-                    value = value && value.split('x');
-                    value = (value && value.length === 2) ? value : [maxShapeSize, maxShapeSize / 2];
-                    S.Shape.switchShape(S.ShapeBuilder.rectangle(Math.min(maxShapeSize, parseInt(value[0])), Math.min(maxShapeSize, parseInt(value[1]))));
-                    break;
-                    case 'circle':
-                    value = parseInt(value) || maxShapeSize;
-                    value = Math.min(value, maxShapeSize);
-                    S.Shape.switchShape(S.ShapeBuilder.circle(value));
-                    break;
-                    case 'time':
-                    var t = formatTime(new Date());
-                    if (sequence.length > 0) {
-                        S.Shape.switchShape(S.ShapeBuilder.letter(t));
                     } else {
-                        timedAction(function () {
-                            t = formatTime(new Date());
-                            if (t !== time) {
-                                time = t;
-                                S.Shape.switchShape(S.ShapeBuilder.letter(time));
-                            }
-                        }, 1000);
+                        S.Shape.switchShape(S.ShapeBuilder.letter(index), true);
                     }
-                    break;
-                    default:
-                    S.Shape.switchShape(S.ShapeBuilder.letter(current[0] === cmd ? 'HacPai' : current));
+                }, 1000, value, true);
+                break;
+            case 'time':
+                var t = formatTime(new Date());
+                if (sequence.length > 0) {
+                    S.Shape.switchShape(S.ShapeBuilder.letter(t));
+                } else {
+                    timedAction(function () {
+                        t = formatTime(new Date());
+                        if (t !== time) {
+                            time = t;
+                            S.Shape.switchShape(S.ShapeBuilder.letter(time));
+                        }
+                    }, 1000);
                 }
-            }, 2000, sequence.length);
+                break;
+            default:
+                // Handle unexpected actions here, or clear out the sequence
+                S.Shape.switchShape(S.ShapeBuilder.letter(current[0] === cmd ? 'HacPai' : current));
         }
+    }, 2000, sequence.length);
+}
         return {
             simulate: function (action) {
                 performAction(action);
