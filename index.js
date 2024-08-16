@@ -3,7 +3,7 @@ var S = {
         S.Drawing.init('.canvas');
         document.body.classList.add('body--ready');
             //想说什么
-            S.UI.simulate("祝彭欣欣|生日快乐哟|cake");
+            S.UI.simulate("祝彭欣欣|生日快乐哟|#cake");
             S.Drawing.loop(function () {
                 S.Shape.render();
             });
