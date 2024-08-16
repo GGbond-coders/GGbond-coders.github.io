@@ -3,7 +3,7 @@ var S = {
         S.Drawing.init('.canvas');
         document.body.classList.add('body--ready');
             //想说什么
-            S.UI.simulate("祝彭欣欣|生日快乐哟");
+            S.UI.simulate("祝彭欣欣|生日快乐哟|cake");
             S.Drawing.loop(function () {
                 S.Shape.render();
             });
@@ -114,19 +114,22 @@ var S = {
                     }
                 }, 1000, value, true);
                 break;
-            case 'time':
-                var t = formatTime(new Date());
-                if (sequence.length > 0) {
-                    S.Shape.switchShape(S.ShapeBuilder.letter(t));
-                } else {
-                    timedAction(function () {
-                        t = formatTime(new Date());
-                        if (t !== time) {
-                            time = t;
-                            S.Shape.switchShape(S.ShapeBuilder.letter(time));
-                        }
-                    }, 1000);
-                }
+            // case 'time':
+            //     var t = formatTime(new Date());
+            //     if (sequence.length > 0) {
+            //         S.Shape.switchShape(S.ShapeBuilder.letter(t));
+            //     } else {
+            //         timedAction(function () {
+            //             t = formatTime(new Date());
+            //             if (t !== time) {
+            //                 time = t;
+            //                 S.Shape.switchShape(S.ShapeBuilder.letter(time));
+            //             }
+            //         }, 1000);
+            //     }
+            //     break;
+            case 'cake':
+                S.Shape.switchShape(S.ShapeBuilder.cake());
                 break;
             default:
                 // Handle unexpected actions here, or clear out the sequence
@@ -134,12 +137,36 @@ var S = {
         }
     }, 2000, sequence.length);
 }
-        return {
+                return {
             simulate: function (action) {
                 performAction(action);
             }
         };
     }());
+    S.ShapeBuilder.cake = function () {
+    var cakeWidth = 80,        // 蛋糕体宽度
+        cakeHeight = 50,       // 蛋糕体高度
+        candleWidth = 10,      // 蜡烛宽度
+        candleHeight = 20,     // 蜡烛高度
+        frostingHeight = 10;   // 蛋糕上层装饰的高度
+
+    var dots = [];
+
+    // 绘制蛋糕体
+    dots = dots.concat(S.ShapeBuilder.rectangle(cakeWidth, cakeHeight).dots);
+
+    // 绘制蛋糕上的装饰
+    dots = dots.concat(S.ShapeBuilder.rectangle(cakeWidth, frostingHeight).dots.map(function(dot) {
+        dot.y -= (cakeHeight - frostingHeight);
+        return dot;
+    }));
+
+    // 绘制蜡烛
+    dots.push(new S.Point({ x: cakeWidth / 2, y: -candleHeight, z: 5, a: 1, h: 0 })); // 蜡烛的底部
+    dots.push(new S.Point({ x: cakeWidth / 2, y: -candleHeight - candleWidth, z: 5, a: 1, h: 0 })); // 蜡烛的顶部
+
+    return { dots: dots, w: cakeWidth, h: cakeHeight + candleHeight };
+};
     S.Point = function (args) {
         this.x = args.x;
         this.y = args.y;
